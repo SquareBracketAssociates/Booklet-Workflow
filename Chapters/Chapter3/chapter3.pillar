@@ -1,0 +1,15 @@
+This chapter is about design decision needed to have a general purpose workflow engine in Pharo.
+
+Un process is a succession of activitiesa ccording to conditions to accomplish an action, an objective. The definition of a process is therefore quite general. 
+A process execution conforms to its process defintion (as much as possible). In real life, realization often derives from plans and adapt.
+
+Workflow should enable worflow realization to eventually diverge when the realization occurs. Workflow realization in WfWorkflow is reified through activations.
+
+
+!!!Dynamic process execution
+
+
+
+${inputFile:Chapters/Chapter3/Persistance.pillar}$
+
+${inputFile:Chapters/Chapter3/Interaction.pillar}$

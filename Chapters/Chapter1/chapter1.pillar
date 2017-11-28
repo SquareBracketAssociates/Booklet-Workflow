@@ -1,11 +1,123 @@
-+Pillar logo>figures/pillar.png|width=30+
-Welcome to Pillar's little user-guide !!
+!!Hands on WfWorkflow
 
-To write a book, you can create chapters and include them into ''book.pillar'' (see the ''book.pillar'' file)
-or directly edit the file.
-If you don't know ''Pillar'', its documentation is *here>https://ci.inria.fr/pharo-contribution/job/EnterprisePharoBook/lastSuccessfulBuild/artifact/book-result/PillarChap/Pillar.html*
+In this chapter, a quick overview of what is possible with WfWorkflow is shown and also the limitations of the package.
+The objective is to give the big picture of the API, of the different components interacting. 
 
-The book is generated directly in HTML and LaTeX with the command ==make book==
+For a more complete explanation of the design, see chapter 2.
 
-You can compile just one chapter with the command ==make book-result/chapterPathAndName.format==
-For example, for the first chapter in LaTeX: ==make book-result/Chapters/Chapter1/chapter1.tex==
+Some design discussions will be exposed in this chapter, especially concerning the missing parts of the package. This discussions will be developed in detail in chapter 3.
+
+The following explain how to use WfWorkflow (inital version). 
+
+!!!WfWorkflow installation
+
+Tested on Pharo 6.1.
+!!!!via github
+
+[[[
+    git clone https://github.com/Netstyle/Workflow.git
+]]]
+
+or evaluate the following in a workspace to quickly load the project:
+
+label=initial load|caption="Do it" in a workspace.|
+[[[language=smalltalk
+    Metacello new
+        baseline: #Workflow;
+        repository: 'github://Netstyle/Workflow:master/src';
+        load.
+]]]
+
+!!!Package overview
+
+WfWorkflow package name is ===Workflow===.
+It's composed of several sub-packages:
+!!!!Workflow
+Main package containing most of the core classes. See next picture. 
+-WfManagedObject and its subclasses. Initilay, because WfManagedObject was a subclass of Omnibase managed object. WfManagedObject inherits of Object, so no persistance is possible at its stage. 
+--WfActivation represents the realization of an activity. It's a central classes of the workflow engine. It has no subclass at this stage. 
+--WfFrame represent the frame to be used in a running-workflow.it has got a reference to the workflow and it is based on a dictionary mapping steps to an activation. It exists several subclasses (RootFrame for the main process frame, SubFrame to embed sub-workflow).
+--WfStaticElement and its subclasses allows to declare workflows. There are different kinds of WfSteps (activity, named, start, substeps that are static or dynamic). There are WfOutgoingEdge that represents transitions form a steps to another. Finally, there is WfWorkflow which represents the main workflow classes composed of other static elements (composite pattern).
+--WfWorkList reprensents the worklist of a running-workflow. It has two collections, one with the running and one  with the completed activations. It is a major components of the engine. For now it has no subclasses.
+--WfWorkflowHistory represents the versions of a workflow definition. He has got a name and references to all the versions of my workflows. He is able to create new versions of a workflow by copying the latest one. 
+-This sub-package has two other classes (not subclass of WfManagedObject)
+--WfWorkflowLibrary that is a collection of some simple workflow definitions (simpleSequence simpleSplit simpleBranch simpleJoin simpleLoop simpleBranchJoin branchAndLoop loopingJoin simpleSubflow loopingSubflow dynamicSubflow)
+--WfWorkflowManager role it to manage the changes within definitions and running workflows. Right now it has no subclasses and define only the protocol (ex: noteRemovalOfEdge:fromStep:)
+
+#Archiving
+#Conditions
+#Tests
+#XPDL
+#XPDL-Export
+#XPDL-Import
+
++Workflow sub-packages>figures/workflow-code-packages.png|width=40+
+
++Workflow full package classes>figures/workflow-code-fullpackageview.png|width=40+
+
++Workflow sub-package classes>figures/workflow-code-hierarchie.png|width=40|@workfloSubpackage+
+
+
+!!!!Activation extracted comment:
+
+[[[eval=true
+    stream
+		nextPutAll: '!!!=========== ', Date today printString , ' ===========' ;
+		lf.
+]]]
+
+[[[eval=true
+    stream
+		nextPutAll: '!!!Comment of Array' ;
+        cr;
+        nextPutAll: Array comment printString;
+		lf.
+]]]
+
+
+!!!Declaring a workflow ()
+
+
+
+!!!Execution of a workflow
+Execution in the initial version seems limited to two kind of activation. 
+Most of the time, UI was sending a completion message to a current activation.
+We explain it below.
+
+!!!!Running a workflow
+
+[[[
+aWorkflow runInFrame
+]]]
+
+!!!!Dynamic workflow resolution
+It seems the orinal goal of the workflow engine was to consider a workflow definition frozen once it's started to be run. If the process model is modified, only new instances will be concerned.
+
+This restriction is not enforced by design and eventually that could be far more interesting to consider process executions as activations based on the model. It should'nt be difficult to enable to change the remaining process according to a forzen past.
+
+It implies providing more control on activations. Indeed, this is currently the more important class in term of responsabilities. It represents the realization sandbox and plenty of processing could be done with the conveyor.
+It is what represents the true realization of a planned activity (through a planned BP).
+- it help manage interactions
+- it manage recording of the execution (log\+\+ replayable)
+- it manage the agent ressource
+
+!!!Recording a workflow execution
+This part is quite empty in the initial relase of Worflow. This was clearly coupled with the persistance solution (Omnibase).
+
+Discussions will be summarized as a suggestion to make recording replayable.
+
+The main classes dedicated to recording xxx and its sublasses. 
+There is a stub method that should be coded (dependant on the persistance solution).
+
+
+!!!Using conditions
+
+!!!Import/Export in xPDL
+
+!!!Scheduling a workflow
+No scheduling at the moment. Clearly this is something to add, at least a naive version enabling activations management. One probably has to add to Activation class capabilities of suspeding, cancelling, ...
+
+The workflow execution produces activations. These activation are associated to ressources.
+
+We have to consider a ressource has a queue to process activation (say ithe agent is a person and has several opened work). The queue is the operating system between the agent that realize the activity (through activations).
+

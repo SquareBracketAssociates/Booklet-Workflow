@@ -1,0 +1,14 @@
+!!!Persistance and import/export
+
+Persistance is not only about backup. Especially in Aare, it was used
+- backup, versioning, logging, 
+
+!!!KISS - A generic solution
+Voyage seems a perfect candidate to store obejcts. At start, all will be in image. We focus primarly on interactions.
+
+The most visible remaining dependance of Omnibase is the class ==WfManagedObject== that was initially a subclass of Omnibase ==OBMangeObject==.
+
+Voyage because you get an in memory storage and if needed a mongo or PUNQLite.
+
+@@todo You could also save your objects using STON (serialization).
+

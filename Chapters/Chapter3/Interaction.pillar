@@ -1,0 +1,20 @@
+!!!Interaction
+
+One major challenge is to design a business process engine that is loosy coupled with interactions solutions like web user interface.
+The solution requires a loose coupling framework allowing to build simple interface with agents/users, being human or another system.
+Annoucment seems  like an interesting framework to build on.
+Ideally, there should be:
+- web interfaces (forms frame)
+- Desktop interface (SPEC, Brick)
+- services/messages communication bus
+
+Useful abstractions to achieve such generic interoperability are:
+- message-based interaction
+- and/or event-based interaction
+- and/or service-based interaction
+
+@@todo  A définir !
+
+!!!Design discussion
+!!!!mesage-based interaction (communication network underlying)
+Need to abstract communcation for the differents agents.

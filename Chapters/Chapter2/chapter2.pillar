@@ -1,16 +1,93 @@
-There is also a template system, you can find template in the folder ''support/template''.
-Some template are already written, but if you want to have your own, you had two solutions:
--edit the existing template related to the format you want to change (recommanded)
--create your own template with its own name and change used template in the Makefile
+!!WfWorkflow Core Design
 
-You will found some template examples in ''support/template'' folder to see how it works.
+The design of ...
+takes most of information from the whitepaper.
 
-The default template system is ''Mustache'' but if you want to use another one it is possible.
-In that case you will have to edit the makefile to use your own template system.
 
-You can also create your own ''Makefile'' rule.
-We let you know that there is a rule ''copySupport'' which copy all figures in the output directory,
-so you can use this rule when you want to.
 
-Output directory's default name is ''book-result'' but you can change it in the Makefile by editing the
-==OUTPUTDIRECTORY== variable
+
+!!!Overview
+!!!Introduction
+A powerful and extensible workflow management engine, written in Smalltalk
+
+Workflow was conceived 2005 and originally written in Squeak Smalltalk and was originally called "Aare", as the swiss river.
+
+Some important points:
+
+This orignal version accessible in the *github repository>* contains only the engine and no examples or user interfaces.
+The original engine depended on the OmniBase object database.The dependency from this version.
+The source has been exported with Iceberg and is compatible with Pharo.
+
+Read the *first whitepaper>* for further information.
+
+In the follwing is a mix between explanations in the whitepaper, discussions in the Pharo community and source code comments.
+
+The source code will be updated accordingly to the comments presented here.
+@@todo get comments automatically from the image.
+
+
+
+1 Overview 4
+
+1.1 Preface .............................. 4
+
+1.2 Introduction............................ 4
+
+1.3 WorkflowEngineFeatures.................... 5
+
+1.3.1 SequentialRouting.................... 5
+
+1.3.2 ConditionalRouting ................... 5
+
+1.3.3 ParallelRouting ..................... 5
+
+1.3.4 SynchronizingMerge................... 6
+
+1.3.5 Loops and Multiple Instances Without Synchronization 6
+
+1.3.6 Multiple Instances Without a Priori Runtime Knowledge 6
+
+1.3.7 EmbeddingSub-Workflow................ 6
+
+1.3.8 EmbeddingSub-WorkflowChoice. . . . . . . . . . . . 6
+
+1.3.9 ImplicitTermination................... 7
+
+1.3.10 OtherTypesofActivities ................ 7
+
+1.4 WorkflowSystemsCompared .................. 7
+
+2 Workflow Design 7
+
+3 Workflow Execution 13
+
+4 Workflow Reporting 16
+
+4.1 Interface.............................. 17 
+
+4.1.1 Title............................ 18 
+
+4.1.2 Selectors.......................... 18 
+
+4.1.3 Conditions ........................ 19 
+
+4.1.4 Fields ........................... 19
+
+4.2 Views ............................... 19 
+
+4.2.1 Report........................... 20 
+
+4.2.2 Export........................... 20 
+
+4.2.3 PieChart ......................... 20 
+
+4.2.4 LineChart ........................ 20
+
+
+5 Document Management System 20
+
+5.1 DocumentEditor......................... 20 
+
+5.2 EditingDocumentTypes .................... 21 
+
+5.3 SearchingDocuments....................... 23
