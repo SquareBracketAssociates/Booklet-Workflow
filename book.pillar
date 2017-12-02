@@ -3,7 +3,7 @@ The document is about the (re)design of the Pharo package Workflow, a powerful a
 
 Its initial name was Aare and it was part of a proprietary application entirely web-based that was successfully integrated with a document management system, enabling one to attach metadata annotated documents to workflows and activities. One special component of Aare was the feature-rich workflow engine allowing one to design complex business workflows, run and control them, collect necessary data through sophisticated electronic forms and automatically notify responsible people.
 
-It was rencently opensourced by *Netstyle>http://www.netstyle.ch*. What's missing compared to the full (proprietary) solution are user interfaces that were web based (Seaside \+ Magritte). Also, persistence that was achived through Omnibase. References were removed but they are stil some disfunctionning. Moreover, the completion of activities were mainly manual and achieved through web interface (web forms). 
+It was recently open-sourced by *Netstyle>http://www.netstyle.ch*. What's missing compared to the full (proprietary) solution are user interfaces that were web based (Seaside \+ Magritte). Also, persistence that was achived through Omnibase. References to Omnibase were removed but they are stil some disfunctionning. Moreover, the completion of activities were mainly manual and achieved through web interface (web forms). 
 
 For now, WfWorkflow is quite usable and quite well tested. It is possible to create processes, activities, transitions and run them (actually complete them) through an simple engine. 
 
@@ -13,14 +13,17 @@ It has to be loosely coupled with the persistence solution and user interactions
 This document first objective is to present the current WfWorkflow design. Most of the information will be extracted from the white paper and by orginal code comments, plus some discussions with several people of the Pharo communauty and especially Max Leske who is from *Netstyle>http://www.netstyle.ch*.
 
 The second objective is to deal with important dessign decision to ensure WfWorkflow being a powerful and extensible workflow management system for Pharo. There are 2 main tasks:
-- rethink persistence (process definition and orchestration, realization)
-Persistance is essential and was central to Aare. Beside removing Omnibase references (and implication of WfManagedObject), some of the application features were very dependant on the persistence (like logging, tracing process evolution). All of these features are to be thing again considering as much as possible a loosely coupled solution. A general purpose storage solution like Voyage could be used. At first, in image storage will be used to focus on the running aspects of the library.   
-- rethink interaction 
+!!!! rethink persistence 
+(process definition and orchestration, realization)
+Persistance is essential and was central to Aare. Beside removing Omnibase references (and implication of WfManagedObject), some of the application features were very dependant on the persistence (like logging, tracing process evolution). All of these features are to be thing again considering as much as possible a loosely coupled solution. A general purpose storage solution like Voyage could be used. At first, in image storage will be used to focus on the running aspects of the library.
+
+!!!! rethink interaction
 Designing a general interaction sub-system is probably the more challenging tasks. Aare was web based only although based on Magritte that could possibl enable morphic rendering. We want workflow to be UI agnostic. Even more, completion of activities are achieved through activation management (a special class of WFWorkfkow that is central and that need more love). One can imagine more than user interaction with automated interactions through service for instance. 
-@@todo Activation should be managed through several possibilities being message-based, event-based, service-based.
-Ideally there should be hook to implement proper interfaces. Annoucement seems a good condidate to build an independant interaction system.
+
+@@todo Activation should be managed through several possibilities being message-based, event-based, service-based. Ideally there should be hook to implement proper interfaces. Annoucement seems a good condidate to build an independant interaction system.
 
 The booklet is clearly a work-in-progress and will evolve according to discussions and code submissions. 
+
 The booklet is organized around several parts:
 - Part I - Workflow by Example Quick way (and current way) of using the business process engine.
 - Part II - Core design and key classes
