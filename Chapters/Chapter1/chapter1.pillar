@@ -1,27 +1,26 @@
 !!Hands on WfWorkflow
+@Chapter1
 
-In this chapter, a quick overview of what is possible with WfWorkflow is shown and also the limitations of the package.
-The objective is to give the big picture of the API, of the different components interacting. 
+In this chapter, a quick overview of what is possible with WfWorkflow is shown and also the limitations of the package. The objective is to give the big picture of the API, of the different components interacting. 
 
-For a more complete explanation of the design, see chapter 2.
+For a more complete explanation of the design, see Chapter *@Chapter2*.
 
-Some design discussions will be exposed in this chapter, especially concerning the missing parts of the package. This discussions will be developed in detail in chapter 3.
+Some design discussions will be exposed in this chapter, especially concerning the missing parts of the package. This discussions will be developed in detail in Chapter *@Chapter2*.
 
-The following explain how to use WfWorkflow (inital version). 
+The following explains how to use WfWorkflow. 
 
 !!!WfWorkflow installation
 
 Tested on Pharo 6.1.
-!!!!via github
 
-[[[
-    git clone https://github.com/Netstyle/Workflow.git
-]]]
+!!!!On github
 
-or evaluate the following in a workspace to quickly load the project:
+Workflow is hosted on the following github repository:  ==https://github.com/Netstyle/Workflow.git==
 
-label=initial load|caption="Do it" in a workspace.|
-[[[language=smalltalk
+
+Evaluate the following in a workspace to quickly load the project:
+
+[[[language=smalltalk|label=initial load|caption="Do it" in a workspace.|
     Metacello new
         baseline: #Workflow;
         repository: 'github://Netstyle/Workflow:master/src';
@@ -31,10 +30,15 @@ label=initial load|caption="Do it" in a workspace.|
 !!!Package overview
 
 WfWorkflow package name is ===Workflow===.
+
++Workflow sub-packages>figures/workflow-code-packages.png|width=40|label=figcode+
+
 It's composed of several sub-packages:
 !!!!Workflow
-Main package containing most of the core classes. See next picture. 
--WfManagedObject and its subclasses. Initilay, because WfManagedObject was a subclass of Omnibase managed object. WfManagedObject inherits of Object, so no persistance is possible at its stage. 
+Main package containing most of the core classes. See Figure*@figcode*.
+
+- ==WfManagedObject== and its subclasses. ==WfManagedObject== inherits of ==Object==.
+
 --WfActivation represents the realization of an activity. It's a central classes of the workflow engine. It has no subclass at this stage. 
 --WfFrame represent the frame to be used in a running-workflow.it has got a reference to the workflow and it is based on a dictionary mapping steps to an activation. It exists several subclasses (RootFrame for the main process frame, SubFrame to embed sub-workflow).
 --WfStaticElement and its subclasses allows to declare workflows. There are different kinds of WfSteps (activity, named, start, substeps that are static or dynamic). There are WfOutgoingEdge that represents transitions form a steps to another. Finally, there is WfWorkflow which represents the main workflow classes composed of other static elements (composite pattern).
@@ -51,7 +55,7 @@ Main package containing most of the core classes. See next picture.
 #XPDL-Export
 #XPDL-Import
 
-+Workflow sub-packages>figures/workflow-code-packages.png|width=40+
+
 
 +Workflow full package classes>figures/workflow-code-fullpackageview.png|width=40+
 

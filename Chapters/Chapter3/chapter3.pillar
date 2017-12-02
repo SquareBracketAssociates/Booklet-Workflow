@@ -1,3 +1,7 @@
+!! Design Discussion
+@Chapter3
+
+
 This chapter is about design decision needed to have a general purpose workflow engine in Pharo.
 
 Un process is a succession of activitiesa ccording to conditions to accomplish an action, an objective. The definition of a process is therefore quite general. 

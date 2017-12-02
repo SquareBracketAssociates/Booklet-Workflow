@@ -1,7 +1,5 @@
-
-
 !!Introduction
-The document is about the (re)design of the Pharo package WfWorkflow, a powerful and extensible workflow management system. 
+The document is about the (re)design of the Pharo package Workflow, a powerful and extensible workflow management system. 
 
 Its initial name was Aare and it was part of a proprietary application entirely web-basedthatwas successfully integrated with a document management system, enabling one to attach metadata annotated documents to workflows and activities. One special component of Aare was the feature-rich workflow engine allowing one to design complex business workflows, run and control them, collect necessary data through sophisticated electronic forms and automatically notify responsible people.
 
@@ -24,8 +22,7 @@ Ideally there should be hook to implement proper interfaces. Annoucement seems a
 
 The booklet is clearly a work-in-progress and will evolve according to discussions and code submissions. 
 The booklet is organized around several parts:
-- Part I - Workflow by Example
-Quick way (and current way) of using the business process engine.
+- Part I - Workflow by Example Quick way (and current way) of using the business process engine.
 - Part II - Core design and key classes
 - Part III - Persistance discussions
 - Part IV - User and automatic interaction (UAI)
