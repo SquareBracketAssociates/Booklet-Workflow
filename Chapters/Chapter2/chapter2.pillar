@@ -8,6 +8,58 @@ Is it not the previous chapter????
 The design of ...
 takes most of information from the whitepaper.
 
+!!!Overview
+
+WfWorkflow package name is ===Workflow===.
+
++Workflow sub-packages>figures/workflow-code-packages.png|width=40|label=figcode+
+
+It's composed of several sub-packages as shown in Figure *@figcode*.
+
++Workflow full package classes>figures/workflow-code-fullpackageview.png|width=40|label=figcore+
+
+!!!!Workflow
+Main package containing most of the core classes (See Figure *@figcore*).
+The base class of Workflow is ==WfManagedObject==. ==WfManagedObject== inherits of ==Object==.
+
+-==WfActivation== represents the realization of an activity. It's a central classes of the workflow engine. It has no subclass at this stage. 
+--WfFrame represent the frame to be used in a running-workflow.it has got a reference to the workflow and it is based on a dictionary mapping steps to an activation. It exists several subclasses (RootFrame for the main process frame, SubFrame to embed sub-workflow).
+--WfStaticElement and its subclasses allows to declare workflows. There are different kinds of WfSteps (activity, named, start, substeps that are static or dynamic). There are WfOutgoingEdge that represents transitions form a steps to another. Finally, there is WfWorkflow which represents the main workflow classes composed of other static elements (composite pattern).
+--WfWorkList reprensents the worklist of a running-workflow. It has two collections, one with the running and one  with the completed activations. It is a major components of the engine. For now it has no subclasses.
+--WfWorkflowHistory represents the versions of a workflow definition. He has got a name and references to all the versions of my workflows. He is able to create new versions of a workflow by copying the latest one. 
+-This sub-package has two other classes (not subclass of WfManagedObject)
+--WfWorkflowLibrary that is a collection of some simple workflow definitions (simpleSequence simpleSplit simpleBranch simpleJoin simpleLoop simpleBranchJoin branchAndLoop loopingJoin simpleSubflow loopingSubflow dynamicSubflow)
+--WfWorkflowManager role it to manage the changes within definitions and running workflows. Right now it has no subclasses and define only the protocol (ex: noteRemovalOfEdge:fromStep:)
+
+#Archiving
+#Conditions
+#Tests
+#XPDL
+#XPDL-Export
+#XPDL-Import
+
+
+
+
+
++Workflow sub-package classes>figures/workflow-code-hierarchie.png|width=40|@workfloSubpackage+
+
+
+%!!!!Activation extracted comment:
+% for the moment let us try to avoid this way.
+%[[[eval=true
+%    stream
+%		nextPutAll: '!!', Date today printString , ;
+%		lf.
+%]]]
+
+%[[[eval=true
+%    stream
+%		nextPutAll: '!!!Comment of Array' ;
+%        cr;
+%        nextPutAll: Array comment printString;
+%		lf.
+%]]]
 
 
 
