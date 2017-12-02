@@ -1,7 +1,7 @@
 !!Introduction
 The document is about the (re)design of the Pharo package Workflow, a powerful and extensible workflow management system. 
 
-Its initial name was Aare and it was part of a proprietary application entirely web-basedthatwas successfully integrated with a document management system, enabling one to attach metadata annotated documents to workflows and activities. One special component of Aare was the feature-rich workflow engine allowing one to design complex business workflows, run and control them, collect necessary data through sophisticated electronic forms and automatically notify responsible people.
+Its initial name was Aare and it was part of a proprietary application entirely web-based that was successfully integrated with a document management system, enabling one to attach metadata annotated documents to workflows and activities. One special component of Aare was the feature-rich workflow engine allowing one to design complex business workflows, run and control them, collect necessary data through sophisticated electronic forms and automatically notify responsible people.
 
 It was rencently opensourced by *Netstyle>http://www.netstyle.ch*. What's missing compared to the full (proprietary) solution are user interfaces that were web based (Seaside \+ Magritte). Also, persistence that was achived through Omnibase. References were removed but they are stil some disfunctionning. Moreover, the completion of activities were mainly manual and achieved through web interface (web forms). 
 
