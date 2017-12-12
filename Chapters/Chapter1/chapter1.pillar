@@ -1,4 +1,16 @@
 !!Hands on WfWorkflow
+
+[[[eval=true
+    (Smalltalk hasClassNamed:  'WfWorkflow') ifFalse: [    "should save not to load again >> update"
+	Metacello new
+  		baseline: #Workflow;
+  		repository: 'github://Netstyle/Workflow:master/src';
+  		load.
+    SmalltalkImage current saveSession]
+]]]
+
+
+
 @Chapter1
 
 In this chapter, a quick overview of what is possible with WfWorkflow is shown and also the limitations of the package. The objective is to give the big picture of the API, of the different components interacting. 
@@ -27,10 +39,327 @@ Evaluate the following in a workspace to quickly load the project:
         load.
 ]]]
 
+There are errors with the actual version.
+
+[[[
+*** Warning: Warning: This package depends on the following classes:
+  WADynamicVariable
+You must resolve these dependencies before you will be able to load these definitions: 
+  WfCurrentWorkflowManager
+
+WfTestArchiving>>assertRoundtripFor: (DomBuilder is Undeclared) 
+WfTestArchiving>>assertRoundtripFor: (IDBasicManager is Undeclared) 
+WfTestArchiving>>assertRoundtripFor: (IDCurrentManager is Undeclared) 
+WfTestXPDL>>assertRoundtripFor: (DomBuilder is Undeclared) 
+WfTestXPDL>>assertRoundtripFor: (IDBasicManager is Undeclared) 
+WfTestXPDL>>assertRoundtripFor: (IDCurrentManager is Undeclared) 
+WfImporter>>import (IDCurrentManager is Undeclared) 
+WfRootFrame>>initializeWithWorkflow: (TimeStamp is Undeclared) 
+WfManagedObject>>workflowManager (WfCurrentWorkflowManager is Undeclared) 
+]]]
 
 
-!!!Declaring a workflow ()
+@@todo Solve these errors (Workflow-cypress.1)
+- a temporary WADynamicVariable is created, subclass of DynamicVariable
+- DomBuilder need to be replaced by XMLParser. 
+- IDBasicManager IDCurrentManager ?
+- TimeStamp reference is replaced by an equivalent.
 
+!!!Package overview
+
+The package name is ===Workflow===. Its goal is to specify, execute, monitor workflow realization. It's all about coordinating the flow of information. One important objective it to do this coordination in a distributed environment.
+
+Workflow sub-package composed of several sub-packages named respectively workflow, archiving, conditions, Tests, XPDL, XPDL-import and XPDL-export. The workflow sub-packagecontains most of the core classes, whether for the static definition of a workflow or for the workflow engine. conditions sub-package contains also workflow specification classes but only used to define transition conditions. Archiving is for the monitoring 
+
+!!!Main classes
+The following is a quick description of the most important classes that allows to specify a workflow (1) and execute it (2). Monitoring is not yet functionning (3) 
+
+==WfManagedObject== inherits of ==Object== was originally subclass of Omnibase managed objects (persistance). Now, there are no persistance by default. One option would be to use voyage and adapt the code to provide persistance on different backends. Lots of classes inherits from ==WfManagedObject==. 
+[[[eval=true
+    stream
+		nextPutAll: '__WfManagedObject comment:__ ' ;
+        nextPutAll: WfManagedObject comment; cr;
+		lf.
+]]]
+
+!!!!Workflow definition (1)
+WfStaticElement and its subclasses are responsible of workflow specification/definition. It is said static as it can be seen as a model of future succession of activities. 
+Here are a quick description of the main classes. 
+
+""WfWorkflow"" is an planified operational aspect of a work procedure. A workflow knows :
+-how activities are structured
+-who perform activities
+-the relative order of activities
+-how activities are synchronized
+-how information flows to support activities (electric form mainly in Aare)
+-how workflows are tracked (evolution records) 
+[[[eval=true
+    stream
+		nextPutAll: '__WfWorkflow comment:__ ' ;
+        nextPutAll: WfWorkflow comment;
+		lf.
+]]]
+
+""Activities"" are represented by ==WfStep== subclasses. There are different kinds of ==WfSteps== (activity, named, start, substeps that are static or dynamic). ==WfNamedStep== is a simple activity. ==WfStep== subclasses represent activity parts of a workflow to do a certain job and they define:
+-form definitions to collect data
+-form conditions to validate entered data
+-transitions to subsequent activities
+-transition conditions to decide which activity to trigger on completion
+-other settings: responsible users, expected duration, documents, ...
+[[[eval=true
+    stream
+		nextPutAll: '__WfStep comment:__ ' ;
+        nextPutAll: WfStep comment;cr;
+		lf.
+]]]
+
+[[[eval=true
+    stream
+		nextPutAll: '__WfStartStep comment (WfStep subclass):__ ' ;
+        nextPutAll: WfStartStep comment;cr;
+		lf.
+]]]
+
+[[[eval=true
+    stream
+		nextPutAll: '__WfNamedStep comment (WfStep subclass):__ ' ;
+        nextPutAll: WfNamedStep comment;cr;
+		lf.
+]]]
+
+[[[eval=true
+    stream
+		nextPutAll: '__WfSubflowStep comment (WfStep subclass):__ ' ;
+        nextPutAll: WfStep comment;cr;
+		lf.
+]]]
+
+[[[eval=true
+    stream
+		nextPutAll: '__WfStaticSubflowStep comment (WfSubflowStep subclass):__ ' ;
+        nextPutAll: WfStep comment;cr;
+		lf.
+]]]
+
+[[[eval=true
+    stream
+		nextPutAll: '__WfDynamicSubflowStep comment (WfSubflowStep subclass):__ ' ;
+        nextPutAll: WfStep comment;cr;
+		lf.
+]]]
+
+Transitions between activities are represented by ""WfOutgoingEdge"" (transitions form a steps to another). 
+[[[eval=true
+    stream
+		nextPutAll: '__WfOutgoingEdge comment:__ ' ;
+        nextPutAll: WfOutgoingEdge comment;cr;
+		lf.
+]]]
+
+On outgoingEdges, conditions can be affected. There are several kind of them, all present in the condition sub-package.
+
+[[[eval=true
+    stream
+		nextPutAll: '__WfCondition comment:__ ' ;
+        nextPutAll: WfCondition comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfTrueCondition comment:__ ' ;
+        nextPutAll: WfTrueCondition comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfFalseCondition comment:__ ' ;
+        nextPutAll: WfFalseCondition comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfValueCondition comment:__ ' ;
+        nextPutAll: WfValueCondition comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfComposedCondition comment (abstract):__ ' ;
+        nextPutAll: WfComposedCondition comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfAllCondition comment (WfComposedCondition subclass):__ ' ;
+        nextPutAll: WfAllCondition comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfAnyCondition comment (WfComposedCondition subclass):__ ' ;
+        nextPutAll: WfAnyCondition comment;cr;
+		lf.
+]]]
+
+Considering all this classes, the workflow package supports several workflow patterns:
+- sequential routing: activation of B is enabled once activation A is completed
+- conditionnal routing: control point according to entered data (or a computed value ?).
+- parallel routing: multiple thread of control (like the simple XOR with 2 true condition on the outgoing edges)
+- syncmerge
+- loop multiple instance without synchronized
+- multi instance with a priori runtime knowledge
+- sub-workflow routing (definition - static)
+- sub-workflow routing (runtime - dynamic)
+- implicit termination (no more active activations and no more possible)
+
+!!!!Workflow execution (2)
+Once workflow are specified, they are executed on demand (eventually scheduled). Workflow specification are like a plan and its realization has to conform to it (the more possible - real execution has to face problems). Once a workflow is executed, the main role of the worflow engine is to coordinate all activities that compose the worflow. Depending on transition and upon activity completion, the engine exposes the new tasks/activities that need to be done. Some other important goal of the engine is to monitor the workflow execution (see the next section).
+
+In Workflow parlance, once a workflow is executed, its lone start activity (instance of ==WfStartStep==) is ''activated''. It transparently activates the next step(s). According to transition conditions, once a step is completed, then, the next available steps are activated. ==WfActivation== are the class that is instanciated each time a ==WfStep== is actually activated. A running activation corresponds to an activity that is running (eventually suspended, idled).
+
+""WfActivation"" represents the realization of an activity as part of a running workflow. It's a central classe of the workflow engine. It has no subclass at this stage. Since there are split or loops in a given workflow, multiple activations of different or the same activity can exist. Moreover , if several workflow are executed in the same time, multiple activations can be active at the same time. On the actual Workflow version, there are no WfActivation subclass (there should be and there a trace of previous BLActivation used in the original Aare application).
+[[[eval=true
+    stream
+		nextPutAll: '__WfActivation comment:__ ' ;
+        nextPutAll: WfActivation comment;cr;
+		lf.
+]]]
+
+So as to keep track and manage workflow real evolution, a ==WfFrame== is used. 
+""==WfFrame=="" represent the frame to be used in a running-workflow.it has got a reference to the workflow and it is based on a dictionary mapping steps to an activation. It exists several subclasses (WfRootFrame for the main process frame, SubFrame to embed sub-workflow, ...).
+[[[eval=true
+    stream
+		nextPutAll: '__WfFrame comment:__ ' ;
+        nextPutAll: WfFrame comment;cr;
+		lf.
+]]]
+WfRootFrame represents the main frame of a workflow execution.
+[[[eval=true
+    stream
+		nextPutAll: '__WfRootFrame comment:__ ' ;
+        nextPutAll: WfRootFrame comment;cr;
+		lf.
+]]]
+
+There are also dedicated sub-frame to deal with static and dynamic subflows.
+[[[eval=true
+    stream
+		nextPutAll: '__WfSubFrame comment:__ ' ;
+        nextPutAll: WfSubFrame comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfLoopingFrame comment (WfSubFrame subclass):__ ' ;
+        nextPutAll: WfLoopingFrame comment;cr;
+		lf.
+]]]
+[[[eval=true
+    stream
+		nextPutAll: '__WfSubflowFrame comment (WfSubFrame subclass):__ ' ;
+        nextPutAll: WfSubflowFrame comment;cr;
+		lf.
+]]]
+
+
+""WfWorkList"" represents the worklist of a running-workflow. It has two collections, one with the running and one  with the completed activations. It is a major components of the engine. For now it has no subclasses.
+It is a kind of simple scheduler or at least activation queue.
+[[[eval=true
+    stream
+		nextPutAll: '__WfWorklList comment:__ ' ;
+        nextPutAll: WfWorkList comment;cr;
+		lf.
+]]]
+
+
+""WfWorkflowHistory"" represents the versions of a workflow definition. He has got a name and references to all the versions of my workflows. He is able to create new versions of a workflow by copying the latest one. 
+[[[eval=true
+    stream
+		nextPutAll: '__WfWorkflowHistory comment:__ ' ;
+        nextPutAll: WfWorkflowHistory comment;cr;
+		lf.
+]]]
+
+""WfWorkflowManager"" role it to manage the changes within definitions and running workflows. Right now it has no subclasses and define only the protocol (ex: noteRemovalOfEdge:fromStep:)
+[[[eval=true
+    stream
+		nextPutAll: '__WfWorkflowManagery comment:__ ' ;
+        nextPutAll: WfWorkflowManager comment;cr;
+		lf.
+]]]
+
+
+!!!!Other classes
+
+""WfWorkflowLibrary"" that is a collection of some simple workflow definitions (simpleSequence simpleSplit simpleBranch simpleJoin simpleLoop simpleBranchJoin branchAndLoop loopingJoin simpleSubflow loopingSubflow dynamicSubflow)
+
+In the archiving package (3), class dedicated to the storage of process executions throught activation log/records are defined. Yet, there are not working right now as they rely on two missing components (DomBuilder, IDBasicManager, IDCurrentManager and IDBasicManag).
+@@todo right now, code exists (class ending with exporter) but they do not work a We have to replace it or ask Max for these components.
+
+In the tests package, there are several unit tests. With small modifications (dumb loading problem solutions), the core tests are green (concern the specification of several kind of workflow and their execution in some ways mainly be sending manually complete to running activations). All hitory, archiving, or importing/exporting are failling as expected since the Workflow package is deconnected from the closed source application. Nevertheless their protocol gives indication on how such functionnlities behave so the will be used as blueprints to the new implementation.
+#
+
+In xPDL xPDL-Export xPDL-Import packages, there are code allowing the serialization of the workflow in the xPDL standard. Code is availbale but an XMLParser is missing right now. Either Netstyle will provide some of thises classes or we will adapt the stand pharo XMLParser.
+
+
+!!!Code snippets
+As I discovered the package and how it works, here are some code snippets to use the package.
+
+!!!!Declaring a workflow
+Several exemples of simple workflow definition can be found in the ==WfWorkflowLibrary== class. For instance, here is a definition of a simple branch workflow.
+
+The workflow representation is:
+[[[
+                       (yes) branch1
+Start => branchPoint =>
+                       (no)  branch2
+]]]
+
+Below are two way to version used to model such a workflow.
+
+[[[language=smalltalk
+    WfWorkflowLibrary>>>simpleBranch
+	| workflow branch1 branch2 branchPoint |
+	workflow :=  self workflowNamed: 'Simple XOR Branch'.
+	branch1 := self newStepNamed: 'Branch 1' in: workflow.
+	branch2 := self newStepNamed: 'Branch 2' in: workflow.
+	branchPoint := self newBranchPointNamed: 'Brancher' for: branch1 and: branch2 in: workflow.
+	workflow start addOutgoingEdgeFor: branchPoint.
+	^ workflow
+]]]
+On this library, several helpers functions defined and there used in the example above. Without any helpers, here is how the code look like to declare the same workflow:
+
+[[[
+| workflow history branch1 branch2 branchPoint|
+workflow := WfWorkflow new. "reset steps (empty Set) and create the start step"
+"To add to the engine history: (not working)"
+history := WfWorkflowHistory forWorkflow: workflow.
+history name: 'Simple XOR Branch'. "name of a workflow is through its history only ?"
+"a workflowmanager sublclass os DynamicVaribale is also concerned"
+branch1 := workflow newStepNamed: 'Branch 1'.  
+branch2 := workflow newStepNamed: 'Branch 2'.  
+workflow addSteps: (Array with: branch1 with: branch2).
+
+branchPoint:= workflow newStepNamed: 'Brancher'.
+branchPoint addOutgoingEdgeFor: branch1.
+branchPoint addOutgoingEdgeFor: branch2.
+branchPoint atOutgoingEdgeFor: branch1 putCondition: (WfValueCondition property: #branch value: true).
+branchPoint atOutgoingEdgeFor: branch2 putCondition: (WfValueCondition property: #branch value: false).
+workflow addStep: branchPoint.
+
+workflow start addOutgoingEdgeFor: branchPoint.
+]]]
+
+WfWorkflow>>>addStep is used through convenience methods like:
+- WfWorkflow>>>newStartStep
+- WfWorkflow>>>newNamedStep
+- WfWorkflow>>>newActivityStep (same implementation as newNamedStep)
+- WfWorkflow>>>newStartStep
+- WfWorkflow>>>newDynamicSubflowStep
+
+But they just create activities (steps) that need to be later associated to outgoing edges + conditions. (#addOutgoingEdgeFor: and atOutgoingEdgeFor:putCondition:).
+
+@@todo create convenience method to build a workflow, like in WfWorkflowLibrary ?
 
 
 !!!Execution of a workflow
@@ -39,10 +368,39 @@ Most of the time, UI was sending a completion message to a current activation.
 We explain it below.
 
 !!!!Running a workflow
+Once a workflow is defined, to be executed, he calls the method #executeInNewFrame. This method instanciate and populate the worklist (WfWorklist) that keep track of the state of the running workflow.
 
 [[[
-aWorkflow runInFrame
+workflow := WfWorkflowLibrary simpleBranch.
+frame := workflow executeInNewFrame.
 ]]]
+
+To see running activitions (activities that are started but not completed yet):
+[[[
+frame worklist running.
+]]]
+
+Once a activation is over, it has to be completed by sending the message #completed. For now, there are only manual completions but we could imagine in the future automatic or semi-atomatic completion based on extrenal interaction or if delegated to a program for instance.
+[[[
+anActivation := frame worklist any.
+anActivation complete. "complete mannully one activation"
+"or"
+frame complete: anActivation.
+]]]
+
+The workflow is running until there are no possible (accessible) activation left. This state is called implicit termination and can be checked with:
+[[[
+frame isCompleted. 
+]]]
+
+Here is the code of the WfFrame>>>completeAll
+[[[
+WfFrame>>>completeAll
+	[self workList allRunning isEmpty] whileFalse:
+		[self completeActivation: self workList allRunning first].
+]]]
+
+!!!!Important methods
 
 !!!!Dynamic workflow resolution
 It seems the orinal goal of the workflow engine was to consider a workflow definition frozen once it's started to be run. If the process model is modified, only new instances will be concerned.
@@ -64,14 +422,12 @@ The main classes dedicated to recording xxx and its sublasses.
 There is a stub method that should be coded (dependant on the persistance solution).
 
 
-!!!Using conditions
-
-!!!Import/Export in xPDL
-
 !!!Scheduling a workflow
 No scheduling at the moment. Clearly this is something to add, at least a naive version enabling activations management. One probably has to add to Activation class capabilities of suspeding, cancelling, ...
 
 The workflow execution produces activations. These activation are associated to ressources.
 
 We have to consider a ressource has a queue to process activation (say ithe agent is a person and has several opened work). The queue is the operating system between the agent that realize the activity (through activations).
+
+@@todo use a scheduler, a planner ?  suggestion. Provide execution of several workflows.
 
